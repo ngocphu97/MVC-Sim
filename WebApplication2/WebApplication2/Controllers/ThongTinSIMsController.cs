@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -11,9 +12,16 @@ namespace WebApplication2.Controllers
         private Model1 db = new Model1();
 
         // GET: ThongTinSIMs
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
             var thongTinSIMs = db.ThongTinSIMs.Include(t => t.KhachHang);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                thongTinSIMs = thongTinSIMs.Where(s => s.IDSIM.Contains(searchString)
+                                       || s.KhachHang.TenKH.Contains(searchString));
+            }
+
             return View(thongTinSIMs.ToList());
         }
 
